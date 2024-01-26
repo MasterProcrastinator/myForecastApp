@@ -6,18 +6,22 @@
 //
 
 import UIKit
-struct Weather: Codable{
+
+struct Weather1: Codable{
     var list: [Weather2]
 }
 struct Weather2: Codable{
     var main: Weather3
+    var weather: Weather32
 }
 struct Weather3: Codable{
     var temp: Double
     var humidity: Int
-    
 }
-
+    struct Weather32: Codable{
+    var main: String
+    var description: String
+}
 
 
 
