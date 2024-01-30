@@ -7,23 +7,29 @@
 
 import UIKit
 
-struct Weather1: Codable{
+struct Weather: Codable{
     var list: [Weather2]
 }
 struct Weather2: Codable{
     var main: Weather3
-    var weather: Weather32
+    var dt_txt: String
+    var weather: [Weather4]
 }
-struct Weather3: Codable{
-    var temp: Double
-    var humidity: Int
-}
-    struct Weather32: Codable{
+struct Weather4: Codable{
     var main: String
     var description: String
 }
 
+struct Weather3: Codable{
+    var temp: Double
+    var humidity: Int
+}
 
+var day = [""]
+var temperature = [""]
+var humidity = [""]
+var weather = [""]
+var weatherDescription = [""]
 
 
 class ViewController: UIViewController {
@@ -60,11 +66,16 @@ class ViewController: UIViewController {
                 if let weatherObj = try? JSONDecoder().decode(Weather.self, from: d){
                     var x = 0
                     while(x<40){
-                        print("temp: \(weatherObj.list[x].main.temp)")
+                        print("day: \(weatherObj.list[x].dt_txt)")
+                        print("temp: \(weatherObj.list[x].main.temp) Fahrenheit")
                         print("humidity: \(weatherObj.list[x].main.humidity)")
+                        print("weather: \(weatherObj.list[x].weather[0].main)")
+                        print("weather description: \(weatherObj.list[x].weather[0].description)")
+                        
                         x+=8
                     }
                     }
+                        
                 else{
                 print("error decoding")
                 }
