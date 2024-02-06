@@ -12,7 +12,7 @@ struct Weather: Codable{
 }
 struct Weather2: Codable{
     var main: Weather3
-    var dt_txt: String
+    var dt: Double
     var weather: [Weather4]
 }
 struct Weather4: Codable{
@@ -25,22 +25,59 @@ struct Weather3: Codable{
     var humidity: Int
 }
 
-var day = [""]
+var day2 = [""]
 var temperature = [""]
 var humidity = [""]
-var weather = [""]
+var weather2 = [""]
 var weatherDescription = [""]
-
+var chooser = 0
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var descOutlet: UILabel!
+    
+    @IBOutlet weak var weatherOutlet: UILabel!
+    
+    @IBOutlet weak var humidOutlet: UILabel!
+    
+    @IBOutlet weak var temperatureOutlet: UILabel!
+    
+    @IBOutlet weak var dayOutlet: UILabel!
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         getWeather()
+        
+        descOutlet.text = weatherDescription[chooser]
+        temperatureOutlet.text = temperature[chooser]
+        humidOutlet.text = humidity[chooser]
+        weatherOutlet.text = weather2[chooser]
+        dayOutlet.text = day2[chooser]
         // Do any additional setup after loading the view.
     }
 
-
+    @IBAction func backAction(_ sender: UIButton) {
+        if(chooser != 1){
+            chooser = chooser - 1
+        }
+        descOutlet.text = weatherDescription[chooser]
+        temperatureOutlet.text = temperature[chooser]
+        humidOutlet.text = humidity[chooser]
+        weatherOutlet.text = weather2[chooser]
+        dayOutlet.text = day2[chooser]
+    }
+    @IBAction func nextAction(_ sender: UIButton) {
+        if(chooser < 5){
+            chooser += 1
+        }
+        descOutlet.text = weatherDescription[chooser]
+        temperatureOutlet.text = temperature[chooser]
+        humidOutlet.text = humidity[chooser]
+        weatherOutlet.text = weather2[chooser]
+        dayOutlet.text = day2[chooser]
+    }
+    
     func getWeather(){
         
         let session = URLSession.shared
@@ -66,11 +103,33 @@ class ViewController: UIViewController {
                 if let weatherObj = try? JSONDecoder().decode(Weather.self, from: d){
                     var x = 0
                     while(x<40){
-                        print("day: \(weatherObj.list[x].dt_txt)")
-                        print("temp: \(weatherObj.list[x].main.temp) Fahrenheit")
-                        print("humidity: \(weatherObj.list[x].main.humidity)")
-                        print("weather: \(weatherObj.list[x].weather[0].main)")
-                        print("weather description: \(weatherObj.list[x].weather[0].description)")
+                        
+                        //day2.append("day: \(weatherObj.list[x].dt)")
+                        
+                        
+                        let Date = Date(timeIntervalSince1970: weatherObj.list[x].dt)
+                            let formatter = DateFormatter()
+                            formatter.dateStyle = .medium
+                        formatter.timeStyle = .none
+                        
+                        let formattedTime = formatter.string(from: Date)
+                           print(formattedTime)
+                           DispatchQueue.main.async {
+                               day2.append("\(formattedTime)")
+
+                           }
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        temperature.append("temp: \(Int(weatherObj.list[x].main.temp.rounded())) Fahrenheit")
+                        humidity.append("humidity: \(weatherObj.list[x].main.humidity)")
+                        weather2.append("weather: \(weatherObj.list[x].weather[0].main)")
+                        weatherDescription.append("weather description: \(weatherObj.list[x].weather[0].description)")
                         
                         x+=8
                     }
